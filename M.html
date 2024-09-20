@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>เครื่องมือคำนวณต้นทุน กำไร และค่าใช้จ่ายสำหรับ SME</title>
+<meta charset="UTF-8"> 
+<style>
+body { font-family: 'Sarabun', sans-serif; }
+.container { max-width: 800px; margin: 20px auto; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+h2 { color: #333; }
+label { display: block; margin-bottom: 5px; }
+input[type="number"] { width: 100px; padding: 5px; margin-bottom: 10px; }
+button { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+#results { margin-top: 20px; border: 1px solid #ddd; padding: 10px; border-radius: 5px; }
+.note { font-size: smaller; color: #555; margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>เครื่องมือคำนวณต้นทุน กำไร และค่าใช้จ่าย</h2>
+
+<h3>กรณีศึกษา: ร้านเบเกอรี่</h3>
+
+<label for="sellingPrice">ราคาขายต่อชิ้น:</label>
+<input type="number" id="sellingPrice" value="10"> บาท
+
+<label for="costOfGoodsSold">ต้นทุนวัตถุดิบต่อชิ้น:</label>
+<input type="number" id="costOfGoodsSold" value="6"> บาท
+
+<label for="desiredProfitMargin">กำไรที่ต้องการ (%):</label>
+<input type="number" id="desiredProfitMargin" value="20"> %
+
+<label for="unitsSoldPerDay">ยอดขายต่อวัน (ชิ้น):</label>
+<input type="number" id="unitsSoldPerDay" value="100"> ชิ้น
+
+<label for="otherExpenses1">ค่าใช้จ่ายอื่นๆ 1 (เช่น ค่าขนส่ง):</label>
+<input type="number" id="otherExpenses1" value="50"> บาท/วัน
+
+<label for="otherExpenses2">ค่าใช้จ่ายอื่นๆ 2 (เช่น ค่าแพคเกจจิ้ง):</label>
+<input type="number" id="otherExpenses2" value="30"> บาท/วัน
+
+<button onclick="calculate()">คำนวณ</button>
+
+<div id="results"></div>
+
+</div>
+
+<script>
+function calculate() {
+    const sellingPrice = parseFloat(document.getElementById("sellingPrice").value);
+    const costOfGoodsSold = parseFloat(document.getElementById("costOfGoodsSold").value);
+    const desiredProfitMargin = parseFloat(document.getElementById("desiredProfitMargin").value) / 100;
+    const unitsSoldPerDay = parseInt(document.getElementById("unitsSoldPerDay").value);
+    const otherExpenses1 = parseFloat(document.getElementById("otherExpenses1").value);
+    const otherExpenses2 = parseFloat(document.getElementById("otherExpenses2").value);
+
+    // คำนวณ
+    const profitPerUnit = sellingPrice - costOfGoodsSold;
+    const targetProfitPerUnit = sellingPrice * desiredProfitMargin;
+    const allowableExpensesPerUnit = profitPerUnit - targetProfitPerUnit;
+    const totalAllowableExpensesPerDay = allowableExpensesPerUnit * unitsSoldPerDay;
+    const totalCostPerUnit = costOfGoodsSold + allowableExpensesPerUnit;
+    const totalCostPerDay = totalCostPerUnit * unitsSoldPerDay;
+    const totalProfitPerDay = (sellingPrice * unitsSoldPerDay) - totalCostPerDay;
+
+    // แสดงผลลัพธ์
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = `
+        <h3>ผลการคำนวณ</h3>
+        <p>กำไรต่อชิ้น: ${profitPerUnit.toFixed(2)} บาท</p>
+        <p>กำไรที่ต้องการต่อชิ้น: ${targetProfitPerUnit.toFixed(2)} บาท</p>
+        <p>ค่าใช้จ่ายที่อนุญาตต่อชิ้น: ${allowableExpensesPerUnit.toFixed(2)} บาท</p>
+        <p>ค่าใช้จ่ายที่อนุญาตรวมต่อวัน: ${totalAllowableExpensesPerDay.toFixed(2)} บาท</p>
+        <p>ต้นทุนรวมต่อชิ้น: ${totalCostPerUnit.toFixed(2)} บาท</p>
+        <p>ต้นทุนรวมต่อวัน: ${totalCostPerDay.toFixed(2)} บาท</p>
+        <p>กำไรสุทธิต่อวัน: ${totalProfitPerDay.toFixed(2)} บาท</p>
+
+        <div class="note">
+            * <b>ต้นทุนสินค้า</b> คือ ค่าใช้จ่ายที่เกี่ยวข้องโดยตรงกับการผลิตหรือซื้อสินค้าเพื่อขาย เช่น วัตถุดิบ ค่าแรงงานโดยตรง และค่าโสหุ้ยการผลิตที่แปรผันตามปริมาณการผลิต
+            * <b>ค่าใช้จ่าย</b> คือ ค่าใช้จ่ายอื่นๆ ที่ไม่เกี่ยวข้องโดยตรงกับการผลิตสินค้า เช่น ค่าเช่า ค่าไฟฟ้า ค่าการตลาด ค่าขนส่ง
+            * <b>กำไรสุทธิ</b> คือ รายได้ทั้งหมดหักด้วยต้นทุนสินค้าและค่าใช้จ่ายทั้งหมด
+        </div>
+
+        <h3>มุมมองอื่นๆ สำหรับการบริหารจัดการร้านเบเกอรี่</h3>
+        <ul>
+            <li><b>วิเคราะห์จุดคุ้มทุน:</b> คำนวณว่าต้องขายสินค้าจำนวนเท่าไหร่จึงจะเริ่มมีกำไร</li>
+            <li><b>เปรียบเทียบราคาขายกับคู่แข่ง:</b> สำรวจราคาขายของคู่แข่ง เพื่อกำหนดราคาขายที่เหมาะสม</li>
+            <li><b>ควบคุมต้นทุนวัตถุดิบ:</b> หาแหล่งวัตถุดิบที่มีคุณภาพในราคาที่เหมาะสม</li>
+            <li><b>ลดค่าใช้จ่ายที่ไม่จำเป็น:</b> ตรวจสอบค่าใช้จ่ายต่างๆ และลดค่าใช้จ่ายที่ไม่จำเป็น</li>
+            <li><b>เพิ่มยอดขาย:</b> ทำการตลาดและโปรโมชั่นเพื่อเพิ่มยอดขาย</li>
+        </ul>
+    `;
+}
+</script>
+
+</body>
+</html>
